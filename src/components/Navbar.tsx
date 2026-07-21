@@ -39,6 +39,7 @@ export function Navbar({ onMenuClick, onSearchClick }: NavbarProps) {
 
   return (
     <header className={`navbar${scrolled ? " navbar--scrolled" : ""}`}>
+      <div className="navbar__inner">
       <button
         type="button"
         className="icon-btn navbar__menu-btn"
@@ -89,6 +90,7 @@ export function Navbar({ onMenuClick, onSearchClick }: NavbarProps) {
         <GitHubIcon />
       </a>
       <ThemeToggle />
+      </div>
     </header>
   );
 }
