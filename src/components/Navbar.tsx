@@ -1,6 +1,30 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { ThemeToggle } from "./ThemeToggle";
+
+// Brand mark — a stylized toast notification (no checkmark), with a gradient tile.
+const LogoMark = () => (
+  <svg
+    className="navbar__logo"
+    viewBox="0 0 32 32"
+    width="30"
+    height="30"
+    role="img"
+    aria-label="Toaster Magic logo"
+  >
+    <defs>
+      <linearGradient id="tm-logo-grad" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stopColor="#0ad18a" />
+        <stop offset="1" stopColor="#10b7c9" />
+      </linearGradient>
+    </defs>
+    <rect width="32" height="32" rx="9" fill="url(#tm-logo-grad)" />
+    <rect x="6.5" y="11.5" width="19" height="9" rx="4.5" fill="#ffffff" opacity="0.96" />
+    <circle cx="11" cy="16" r="1.9" fill="#0ad18a" />
+    <rect x="14.5" y="14.4" width="8.5" height="1.7" rx="0.85" fill="#0ad18a" opacity="0.55" />
+    <rect x="14.5" y="17.2" width="6" height="1.7" rx="0.85" fill="#0ad18a" opacity="0.35" />
+  </svg>
+);
 
 const GitHubIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -28,6 +52,7 @@ interface NavbarProps {
 
 export function Navbar({ onMenuClick, onSearchClick }: NavbarProps) {
   const [scrolled, setScrolled] = useState(false);
+  const isHome = useLocation().pathname === "/";
 
   // Add a subtle shadow once the page is scrolled, so the header lifts off the content.
   useEffect(() => {
@@ -37,8 +62,17 @@ export function Navbar({ onMenuClick, onSearchClick }: NavbarProps) {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // On the home page the bar is transparent over the hero until scrolled.
+  const className = [
+    "navbar",
+    isHome ? "navbar--home" : "",
+    scrolled ? "navbar--scrolled" : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
   return (
-    <header className={`navbar${scrolled ? " navbar--scrolled" : ""}`}>
+    <header className={className}>
       <div className="navbar__inner">
       <button
         type="button"
@@ -50,7 +84,7 @@ export function Navbar({ onMenuClick, onSearchClick }: NavbarProps) {
       </button>
 
       <Link to="/" className="navbar__brand">
-        <img src={`${import.meta.env.BASE_URL}favicon.svg`} alt="" className="navbar__logo" />
+        <LogoMark />
         <span className="navbar__brand-text">Toaster Magic</span>
         <span className="navbar__version">v1.0</span>
       </Link>
