@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b0f14" />
+      <stop offset="1" stop-color="#111a22" />
+    </linearGradient>
+    <linearGradient id="badge" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0ad18a" />
+      <stop offset="1" stop-color="#04a56b" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)" />
+  <g transform="translate(96 210)">
+    <rect width="132" height="132" rx="30" fill="url(#badge)" />
+    <path fill="#fff" d="M100 44 61 83a8 8 0 0 1-11 0L33 66a5.4 5.4 0 0 1 8-8l14 14 36-35a5.4 5.4 0 0 1 8 8z" transform="translate(-4 -2)" />
+  </g>
+  <text x="260" y="286" font-family="'Segoe UI', system-ui, sans-serif" font-size="88" font-weight="800" fill="#ffffff">Toaster Magic</text>
+  <text x="262" y="356" font-family="'Segoe UI', system-ui, sans-serif" font-size="36" font-weight="500" fill="#9fb3c8">Lightweight toast notifications · 7 themes · zero dependencies</text>
+  <g font-family="'Segoe UI', system-ui, sans-serif" font-size="30" font-weight="600" fill="#0ad18a">
+    <text x="262" y="440">~5 KB min+gzip</text>
+    <text x="520" y="440" fill="#6ee7b7">·</text>
+    <text x="548" y="440">TypeScript</text>
+    <text x="760" y="440" fill="#6ee7b7">·</text>
+    <text x="788" y="440">React · Vue · Vanilla</text>
+  </g>
+</svg>
