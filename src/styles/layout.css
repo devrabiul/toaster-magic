@@ -37,6 +37,17 @@
   backdrop-filter: none;
   border-bottom-color: transparent;
 }
+/* The home navbar is intentionally different from the docs navbar: a narrower
+   container aligned with the home content, and no sidebar toggle (there is no
+   sidebar on the home page, so it's hidden even on mobile). */
+.navbar--home .navbar__inner {
+  max-width: 1100px;
+  padding-left: 24px;
+  padding-right: 24px;
+}
+.navbar--home .navbar__menu-btn {
+  display: none;
+}
 
 .navbar__brand {
   display: flex;
