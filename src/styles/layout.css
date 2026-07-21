@@ -4,6 +4,10 @@
 
 .app-shell {
   min-height: 100vh;
+  /* Clip horizontal bleed (e.g. the hero aurora's off-screen blobs) so it never
+     widens the page or adds empty space / a scrollbar on the right. `clip`
+     (not `hidden`) keeps the sticky navbar working. */
+  overflow-x: clip;
 }
 
 /* ---- Navbar ---------------------------------------------------------------- */
