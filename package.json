@@ -1,6 +1,6 @@
 {
   "name": "toaster-magic",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Lightweight, dependency-free toast notifications with beautiful themes. Works with React, Vue, Next.js, Nuxt, Svelte, or plain JavaScript.",
   "keywords": [
     "toast",
