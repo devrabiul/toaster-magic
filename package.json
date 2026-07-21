@@ -15,10 +15,10 @@
     "vanilla-js",
     "typescript"
   ],
-  "homepage": "https://github.com/devrabiul/laravel-toaster-magic",
+  "homepage": "https://github.com/devrabiul/toaster-magic",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/devrabiul/laravel-toaster-magic.git",
+    "url": "git+https://github.com/devrabiul/toaster-magic.git",
     "directory": "packages/toaster-magic"
   },
   "license": "MIT",

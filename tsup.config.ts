@@ -14,8 +14,8 @@ export default defineConfig([
     sourcemap: true,
     async onSuccess() {
       await mkdir("dist", { recursive: true });
-      await copyFile(join(cssSource, "laravel-toaster-magic.css"), "dist/toaster-magic.css");
-      await copyFile(join(cssSource, "laravel-toaster-magic.min.css"), "dist/toaster-magic.min.css");
+      await copyFile(join(cssSource, "toaster-magic.css"), "dist/toaster-magic.css");
+      await copyFile(join(cssSource, "toaster-magic.min.css"), "dist/toaster-magic.min.css");
     },
   },
   {

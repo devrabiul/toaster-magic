@@ -90,7 +90,7 @@ npm version major   # 1.0.0 → 2.0.0  (breaking changes)
 
 Follow [semver](https://semver.org/): if consumers must change their code, it's a major.
 
-> Tip: if the CSS in `assets/css/laravel-toaster-magic.css` changed in the Laravel package,
+> Tip: if the CSS in `assets/css/toaster-magic.css` changed in the Laravel package,
 > a rebuild picks it up automatically (the build copies it into `dist/`) — that alone is
 > usually a `patch` or `minor` release for the npm package.
 

@@ -1,6 +1,6 @@
 # Toaster Magic
 
-Lightweight, dependency-free toast notifications with beautiful themes — the standalone JavaScript version of [Laravel Toaster Magic](https://github.com/devrabiul/laravel-toaster-magic). Works with **React**, **Vue**, **Next.js**, **Nuxt**, **Svelte**, or plain JavaScript.
+Lightweight, dependency-free toast notifications with beautiful themes — the standalone JavaScript version of [Laravel Toaster Magic](https://github.com/devrabiul/toaster-magic). Works with **React**, **Vue**, **Next.js**, **Nuxt**, **Svelte**, or plain JavaScript.
 
 - 🪶 Zero dependencies, ~5 KB min+gzip JS
 - 🎨 7 themes: `default`, `material`, `ios`, `glassmorphism`, `neon`, `minimal`, `neumorphism`
