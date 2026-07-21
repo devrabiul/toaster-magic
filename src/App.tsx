@@ -1,36 +1,39 @@
-import { Suspense, lazy, useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
 import { Navbar } from "./components/Navbar";
 import { SearchDialog } from "./components/SearchDialog";
 import { Sidebar } from "./components/Sidebar";
 
-const Home = lazy(() => import("./pages/Home"));
-const GettingStarted = lazy(() => import("./pages/GettingStarted"));
-const Installation = lazy(() => import("./pages/Installation"));
-const QuickStart = lazy(() => import("./pages/QuickStart"));
-const BasicUsage = lazy(() => import("./pages/BasicUsage"));
-const Themes = lazy(() => import("./pages/Themes"));
-const Animations = lazy(() => import("./pages/Animations"));
-const Positioning = lazy(() => import("./pages/Positioning"));
-const Configuration = lazy(() => import("./pages/Configuration"));
-const DarkMode = lazy(() => import("./pages/DarkMode"));
-const Examples = lazy(() => import("./pages/Examples"));
-const TypeScriptPage = lazy(() => import("./pages/TypeScriptPage"));
-const BestPractices = lazy(() => import("./pages/BestPractices"));
-const Migration = lazy(() => import("./pages/Migration"));
-const ReactPage = lazy(() => import("./pages/frameworks/ReactPage"));
-const VuePage = lazy(() => import("./pages/frameworks/VuePage"));
-const LaravelPage = lazy(() => import("./pages/frameworks/LaravelPage"));
-const CdnPage = lazy(() => import("./pages/frameworks/CdnPage"));
-const Api = lazy(() => import("./pages/Api"));
-const Methods = lazy(() => import("./pages/Methods"));
-const Options = lazy(() => import("./pages/Options"));
-const Faq = lazy(() => import("./pages/Faq"));
-const Troubleshooting = lazy(() => import("./pages/Troubleshooting"));
-const Changelog = lazy(() => import("./pages/Changelog"));
-const Contributing = lazy(() => import("./pages/Contributing"));
-const License = lazy(() => import("./pages/License"));
-const NotFound = lazy(() => import("./pages/NotFound"));
+// Pages are imported eagerly (not lazily) so route changes are instant with no
+// loading flash. The whole site is small enough that a single bundle is faster
+// to navigate than paying a Suspense fallback on every page change.
+import Home from "./pages/Home";
+import GettingStarted from "./pages/GettingStarted";
+import Installation from "./pages/Installation";
+import QuickStart from "./pages/QuickStart";
+import BasicUsage from "./pages/BasicUsage";
+import Themes from "./pages/Themes";
+import Animations from "./pages/Animations";
+import Positioning from "./pages/Positioning";
+import Configuration from "./pages/Configuration";
+import DarkMode from "./pages/DarkMode";
+import Examples from "./pages/Examples";
+import TypeScriptPage from "./pages/TypeScriptPage";
+import BestPractices from "./pages/BestPractices";
+import Migration from "./pages/Migration";
+import ReactPage from "./pages/frameworks/ReactPage";
+import VuePage from "./pages/frameworks/VuePage";
+import LaravelPage from "./pages/frameworks/LaravelPage";
+import CdnPage from "./pages/frameworks/CdnPage";
+import Api from "./pages/Api";
+import Methods from "./pages/Methods";
+import Options from "./pages/Options";
+import Faq from "./pages/Faq";
+import Troubleshooting from "./pages/Troubleshooting";
+import Changelog from "./pages/Changelog";
+import Contributing from "./pages/Contributing";
+import License from "./pages/License";
+import NotFound from "./pages/NotFound";
 
 /** Scrolls to top on route change, or to the anchored heading if the URL has a hash. */
 function ScrollManager() {
@@ -88,61 +91,47 @@ export default function App() {
 
       {isHome ? (
         <main id="main-content">
-          <Suspense fallback={<PageLoader />}>
-            <Routes>
-              <Route path="/" element={<Home />} />
-            </Routes>
-          </Suspense>
+          <Routes>
+            <Route path="/" element={<Home />} />
+          </Routes>
         </main>
       ) : (
         <div className="layout">
           <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
           <main id="main-content">
-            <Suspense fallback={<PageLoader />}>
-              <Routes>
-                <Route path="/docs/getting-started" element={<GettingStarted />} />
-                <Route path="/docs/installation" element={<Installation />} />
-                <Route path="/docs/quick-start" element={<QuickStart />} />
-                <Route path="/docs/basic-usage" element={<BasicUsage />} />
-                <Route path="/docs/themes" element={<Themes />} />
-                <Route path="/docs/animations" element={<Animations />} />
-                <Route path="/docs/positioning" element={<Positioning />} />
-                <Route path="/docs/configuration" element={<Configuration />} />
-                <Route path="/docs/dark-mode" element={<DarkMode />} />
-                <Route path="/docs/examples" element={<Examples />} />
-                <Route path="/docs/typescript" element={<TypeScriptPage />} />
-                <Route path="/docs/best-practices" element={<BestPractices />} />
-                <Route path="/docs/migration" element={<Migration />} />
-                <Route path="/docs/frameworks/react" element={<ReactPage />} />
-                <Route path="/docs/frameworks/vue" element={<VuePage />} />
-                <Route path="/docs/frameworks/laravel" element={<LaravelPage />} />
-                <Route path="/docs/frameworks/cdn" element={<CdnPage />} />
-                <Route path="/docs/api" element={<Api />} />
-                <Route path="/docs/methods" element={<Methods />} />
-                <Route path="/docs/options" element={<Options />} />
-                <Route path="/docs/faq" element={<Faq />} />
-                <Route path="/docs/troubleshooting" element={<Troubleshooting />} />
-                <Route path="/docs/changelog" element={<Changelog />} />
-                <Route path="/docs/contributing" element={<Contributing />} />
-                <Route path="/docs/license" element={<License />} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </Suspense>
+            <Routes>
+              <Route path="/docs/getting-started" element={<GettingStarted />} />
+              <Route path="/docs/installation" element={<Installation />} />
+              <Route path="/docs/quick-start" element={<QuickStart />} />
+              <Route path="/docs/basic-usage" element={<BasicUsage />} />
+              <Route path="/docs/themes" element={<Themes />} />
+              <Route path="/docs/animations" element={<Animations />} />
+              <Route path="/docs/positioning" element={<Positioning />} />
+              <Route path="/docs/configuration" element={<Configuration />} />
+              <Route path="/docs/dark-mode" element={<DarkMode />} />
+              <Route path="/docs/examples" element={<Examples />} />
+              <Route path="/docs/typescript" element={<TypeScriptPage />} />
+              <Route path="/docs/best-practices" element={<BestPractices />} />
+              <Route path="/docs/migration" element={<Migration />} />
+              <Route path="/docs/frameworks/react" element={<ReactPage />} />
+              <Route path="/docs/frameworks/vue" element={<VuePage />} />
+              <Route path="/docs/frameworks/laravel" element={<LaravelPage />} />
+              <Route path="/docs/frameworks/cdn" element={<CdnPage />} />
+              <Route path="/docs/api" element={<Api />} />
+              <Route path="/docs/methods" element={<Methods />} />
+              <Route path="/docs/options" element={<Options />} />
+              <Route path="/docs/faq" element={<Faq />} />
+              <Route path="/docs/troubleshooting" element={<Troubleshooting />} />
+              <Route path="/docs/changelog" element={<Changelog />} />
+              <Route path="/docs/contributing" element={<Contributing />} />
+              <Route path="/docs/license" element={<License />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
           </main>
         </div>
       )}
 
       <SearchDialog open={searchOpen} onClose={closeSearch} />
-    </div>
-  );
-}
-
-function PageLoader() {
-  return (
-    <div className="content-wrap">
-      <div className="content" style={{ opacity: 0.5 }}>
-        Loading…
-      </div>
     </div>
   );
 }

@@ -41,6 +41,12 @@ export default function Home() {
       <Seo title={home.title} description={home.description} path="/" keywords={home.keywords} />
       <div className="home">
         <section className="hero">
+          <div className="hero__bg" aria-hidden="true">
+            <span className="hero__blob hero__blob--1" />
+            <span className="hero__blob hero__blob--2" />
+            <span className="hero__blob hero__blob--3" />
+            <div className="hero__grid" />
+          </div>
           <span className="hero__badge">🎉 v1.0 · MIT licensed · zero dependencies</span>
           <h1 className="hero__title">
             Toast notifications

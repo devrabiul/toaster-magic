@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ThemeToggle } from "./ThemeToggle";
 
@@ -26,8 +27,18 @@ interface NavbarProps {
 }
 
 export function Navbar({ onMenuClick, onSearchClick }: NavbarProps) {
+  const [scrolled, setScrolled] = useState(false);
+
+  // Add a subtle shadow once the page is scrolled, so the header lifts off the content.
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   return (
-    <header className="navbar">
+    <header className={`navbar${scrolled ? " navbar--scrolled" : ""}`}>
       <button
         type="button"
         className="icon-btn navbar__menu-btn"
@@ -39,7 +50,7 @@ export function Navbar({ onMenuClick, onSearchClick }: NavbarProps) {
 
       <Link to="/" className="navbar__brand">
         <img src={`${import.meta.env.BASE_URL}favicon.svg`} alt="" className="navbar__logo" />
-        Toaster Magic
+        <span className="navbar__brand-text">Toaster Magic</span>
         <span className="navbar__version">v1.0</span>
       </Link>
 
