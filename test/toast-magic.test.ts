@@ -150,4 +150,75 @@ describe("ToastMagic", () => {
     expect(document.querySelector(".toast-container")).toBeNull();
     expect(() => toast.getConfig()).not.toThrow();
   });
+
+  it("renders an avatar image instead of the type icon", () => {
+    new ToastMagic().success("Hi", "there", { avatar: "https://example.com/a.png" });
+
+    const img = getToasts()[0].querySelector<HTMLImageElement>(".toast-avatar");
+    expect(img).not.toBeNull();
+    expect(img!.getAttribute("src")).toBe("https://example.com/a.png");
+  });
+
+  it("adds an animation class when configured", () => {
+    new ToastMagic({ animation: "bounce" }).info("Boing");
+    expect(getToasts()[0].classList.contains("toast-animate-bounce")).toBe(true);
+  });
+
+  it("lets a per-toast timeOut override the global config", () => {
+    new ToastMagic({ timeOut: 10000 }).info("quick", "", { timeOut: 500 });
+    expect(getToasts()).toHaveLength(1);
+
+    vi.advanceTimersByTime(500); // per-toast dismiss fires
+    vi.advanceTimersByTime(500); // exit animation finishes
+    expect(getToasts()).toHaveLength(0);
+  });
+
+  it("pauses and resumes the auto-dismiss timer on hover", () => {
+    const toast = new ToastMagic({ timeOut: 1000, pauseOnHover: true });
+    toast.info("hover me");
+    const item = getToasts()[0];
+
+    vi.advanceTimersByTime(500);
+    item.dispatchEvent(new Event("mouseenter"));
+    vi.advanceTimersByTime(5000); // paused — nothing dismisses
+    expect(getToasts()).toHaveLength(1);
+
+    item.dispatchEvent(new Event("mouseleave"));
+    vi.advanceTimersByTime(500); // ~500ms remained → dismiss fires
+    vi.advanceTimersByTime(500); // exit animation finishes
+    expect(getToasts()).toHaveLength(0);
+  });
+
+  it("reads window.toastMagicConfig, including snake_case keys", () => {
+    (window as unknown as { toastMagicConfig?: unknown }).toastMagicConfig = {
+      positionClass: "toast-bottom-center",
+      gradient_enable: true,
+      color_mode: true,
+    };
+    try {
+      const cfg = new ToastMagic().getConfig();
+      expect(cfg.positionClass).toBe("toast-bottom-center");
+      expect(cfg.gradientEnable).toBe(true);
+      expect(cfg.colorMode).toBe(true);
+    } finally {
+      delete (window as unknown as { toastMagicConfig?: unknown }).toastMagicConfig;
+    }
+  });
+
+  it("triggers toasts from [data-toast-*] elements (global build)", async () => {
+    await import("../src/global");
+
+    const btn = document.createElement("button");
+    btn.setAttribute("data-toast-type", "success");
+    btn.setAttribute("data-toast-heading", "Clicked");
+    btn.setAttribute("data-toast-description", "It works");
+    document.body.appendChild(btn);
+
+    btn.click();
+
+    const item = getToasts()[0];
+    expect(item).toBeDefined();
+    expect(item.querySelector("h4")!.textContent).toBe("Clicked");
+    expect(item.classList.contains("toast-success")).toBe(true);
+  });
 });

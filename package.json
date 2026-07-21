@@ -1,25 +1,41 @@
 {
   "name": "toaster-magic",
   "version": "1.0.1",
-  "description": "Lightweight, dependency-free toast notifications with beautiful themes. Works with React, Vue, Next.js, Nuxt, Svelte, or plain JavaScript.",
+  "description": "Lightweight, dependency-free toast notification library with 7 beautiful themes and smooth animations. Works with React, Vue, Next.js, Nuxt, Svelte, Angular, or vanilla JavaScript — ESM, CJS & CDN builds with full TypeScript types.",
   "keywords": [
     "toast",
     "toaster",
+    "toast-notification",
     "notifications",
+    "notification",
     "toastr",
     "snackbar",
+    "alert",
+    "message",
+    "popup",
     "react",
     "vue",
     "nextjs",
     "nuxt",
+    "svelte",
+    "angular",
     "vanilla-js",
-    "typescript"
+    "javascript",
+    "typescript",
+    "browser",
+    "esm",
+    "cdn",
+    "ssr",
+    "themes",
+    "notification-library"
   ],
-  "homepage": "https://github.com/devrabiul/toaster-magic",
+  "homepage": "https://github.com/devrabiul/toaster-magic#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/devrabiul/toaster-magic.git",
-    "directory": "packages/toaster-magic"
+    "url": "git+https://github.com/devrabiul/toaster-magic.git"
+  },
+  "bugs": {
+    "url": "https://github.com/devrabiul/toaster-magic/issues"
   },
   "license": "MIT",
   "author": {
@@ -27,6 +43,7 @@
     "email": "devrabiul@gmail.com",
     "url": "https://rixetbd.com"
   },
+  "funding": "https://github.com/sponsors/devrabiul",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -35,12 +52,18 @@
   "jsdelivr": "./dist/toaster-magic.global.js",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
     },
     "./css": "./dist/toaster-magic.css",
     "./css/min": "./dist/toaster-magic.min.css",
+    "./package.json": "./package.json",
     "./dist/*": "./dist/*"
   },
   "sideEffects": [
@@ -55,6 +78,7 @@
   "scripts": {
     "build": "rm -rf dist && tsup",
     "test": "vitest run",
+    "typecheck": "tsc --noEmit",
     "prepublishOnly": "npm run build && npm test"
   },
   "devDependencies": {

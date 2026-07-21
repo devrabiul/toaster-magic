@@ -1,7 +1,9 @@
 # How to Release `toaster-magic` on npm
 
 A step-by-step guide for publishing the standalone JavaScript package to the npm registry.
-All commands run from `packages/toaster-magic/` unless noted otherwise.
+All commands run from the package root (the repository root) unless noted otherwise.
+
+> Looking for the full publishing reference? See [`docs/publish.md`](docs/publish.md).
 
 ---
 
@@ -90,8 +92,8 @@ npm version major   # 1.0.0 → 2.0.0  (breaking changes)
 
 Follow [semver](https://semver.org/): if consumers must change their code, it's a major.
 
-> Tip: if the CSS in `assets/css/toaster-magic.css` changed in the Laravel package,
-> a rebuild picks it up automatically (the build copies it into `dist/`) — that alone is
+> Tip: the stylesheet lives in `src/styles/toaster-magic.css` (this package is standalone).
+> If you edit it, a rebuild copies it into `dist/` automatically — a CSS-only change is
 > usually a `patch` or `minor` release for the npm package.
 
 ---
@@ -145,7 +147,7 @@ highlights: framework support, SSR safety, HTML escaping, CDN build, etc.
 ## 6. Releasing updates (the short version)
 
 ```bash
-cd packages/toaster-magic
+# from the package (repository) root
 # 1. make and commit your changes
 npm test                      # sanity check
 npm version patch             # or minor / major — bumps + commits + tags
@@ -180,9 +182,7 @@ jobs:
           node-version: 22
           registry-url: https://registry.npmjs.org
       - run: npm ci
-        working-directory: packages/toaster-magic
       - run: npm publish --provenance
-        working-directory: packages/toaster-magic
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 ```

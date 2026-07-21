@@ -2,3 +2,7 @@ node_modules/
 dist/
 *.tgz
 .claude
+.idea/
+plan.md
+docs/
+demo.html
