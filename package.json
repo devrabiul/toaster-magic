@@ -1,0 +1,70 @@
+{
+  "name": "toaster-magic",
+  "version": "1.0.0",
+  "description": "Lightweight, dependency-free toast notifications with beautiful themes. Works with React, Vue, Next.js, Nuxt, Svelte, or plain JavaScript.",
+  "keywords": [
+    "toast",
+    "toaster",
+    "notifications",
+    "toastr",
+    "snackbar",
+    "react",
+    "vue",
+    "nextjs",
+    "nuxt",
+    "vanilla-js",
+    "typescript"
+  ],
+  "homepage": "https://github.com/devrabiul/laravel-toaster-magic",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/devrabiul/laravel-toaster-magic.git",
+    "directory": "packages/toaster-magic"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "Muhammad Rabiul",
+    "email": "devrabiul@gmail.com",
+    "url": "https://rixetbd.com"
+  },
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "unpkg": "./dist/toaster-magic.global.js",
+  "jsdelivr": "./dist/toaster-magic.global.js",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./css": "./dist/toaster-magic.css",
+    "./css/min": "./dist/toaster-magic.min.css",
+    "./dist/*": "./dist/*"
+  },
+  "sideEffects": [
+    "**/*.css",
+    "./dist/toaster-magic.global.js"
+  ],
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "rm -rf dist && tsup",
+    "test": "vitest run",
+    "prepublishOnly": "npm run build && npm test"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.1",
+    "jsdom": "^25.0.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5.5.0",
+    "vitest": "^4.1.10"
+  },
+  "overrides": {
+    "esbuild": "^0.28.1"
+  }
+}

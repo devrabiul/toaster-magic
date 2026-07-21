@@ -1,0 +1,1240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Toaster Magic Docs</title>
+<link rel="stylesheet" href="./dist/toaster-magic.css">
+<style>
+    :root {
+        --bg: #ffffff;
+        --bg-soft: #fafafa;
+        --bg-hover: #f2f2f2;
+        --border: #eaeaea;
+        --fg: #171717;
+        --fg-soft: #666666;
+        --fg-faint: #999999;
+        --blue: #0070f3;
+        --blue-soft: rgba(0, 112, 243, 0.08);
+        --code-bg: #fafafa;
+        --btn-fg: #ffffff;
+        --btn-bg: #171717;
+        --ring: rgba(0, 112, 243, 0.35);
+        --tok-c: #6a737d;
+        --tok-s: #0a3069;
+        --tok-k: #cf222e;
+        --tok-n: #0550ae;
+        --tok-f: #8250df;
+        --tok-a: #116329;
+        --sh: 0 1px 2px rgba(0,0,0,.04);
+    }
+    body[theme="dark"] {
+        --bg: #0a0a0a;
+        --bg-soft: #111111;
+        --bg-hover: #1a1a1a;
+        --border: #2e2e2e;
+        --fg: #ededed;
+        --fg-soft: #a1a1a1;
+        --fg-faint: #6e6e6e;
+        --blue: #52a8ff;
+        --blue-soft: rgba(82, 168, 255, 0.1);
+        --code-bg: #111111;
+        --btn-fg: #0a0a0a;
+        --btn-bg: #ededed;
+        --tok-c: #8b949e;
+        --tok-s: #a5d6ff;
+        --tok-k: #ff7b72;
+        --tok-n: #79c0ff;
+        --tok-f: #d2a8ff;
+        --tok-a: #7ee787;
+        --sh: none;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: 90px; }
+    body {
+        margin: 0;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        font-size: 15px;
+        color: var(--fg);
+        background: var(--bg);
+        line-height: 1.7;
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+    }
+    ::selection { background: var(--blue-soft); }
+
+    /* ================= Header ================= */
+    .nav {
+        position: sticky;
+        top: 0;
+        z-index: 600;
+        height: 64px;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        padding: 0 24px;
+        background: color-mix(in srgb, var(--bg) 80%, transparent);
+        backdrop-filter: saturate(180%) blur(10px);
+        border-bottom: 1px solid var(--border);
+    }
+    .nav-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--fg); }
+    .nav-logo {
+        width: 26px; height: 26px;
+        border-radius: 50%;
+        background: var(--fg);
+        color: var(--bg);
+        display: grid;
+        place-items: center;
+        font-size: 13px;
+        font-weight: 700;
+    }
+    .nav-brand b { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; }
+    .nav-sep { color: var(--border); font-size: 20px; font-weight: 300; user-select: none; }
+    .nav-crumb { color: var(--fg-soft); font-size: 14px; }
+    .nav-right { margin-inline-start: auto; display: flex; align-items: center; gap: 6px; }
+    .nav-search {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        width: 240px;
+        height: 34px;
+        padding: 0 10px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        background: var(--bg-soft);
+        color: var(--fg-faint);
+        cursor: text;
+    }
+    .nav-search:focus-within { border-color: var(--blue); box-shadow: 0 0 0 3px var(--ring); }
+    .nav-search svg { flex: none; }
+    .nav-search input {
+        border: none; outline: none; background: none;
+        font: inherit; font-size: 13.5px;
+        color: var(--fg);
+        width: 100%;
+    }
+    .nav-search kbd {
+        flex: none;
+        font-family: inherit;
+        font-size: 11px;
+        color: var(--fg-faint);
+        border: 1px solid var(--border);
+        border-radius: 5px;
+        padding: 1px 5px;
+        background: var(--bg);
+    }
+    .nav-link {
+        font-size: 14px;
+        color: var(--fg-soft);
+        text-decoration: none;
+        padding: 7px 10px;
+        border-radius: 8px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-family: inherit;
+        line-height: 1;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .nav-link:hover { color: var(--fg); background: var(--bg-hover); }
+    .nav-icon-btn {
+        width: 34px; height: 34px;
+        display: grid; place-items: center;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        background: none;
+        color: var(--fg-soft);
+        cursor: pointer;
+    }
+    .nav-icon-btn:hover { color: var(--fg); background: var(--bg-hover); }
+
+    /* ================= Shell ================= */
+    .shell {
+        display: grid;
+        grid-template-columns: 264px minmax(0, 1fr) 220px;
+        max-width: 1440px;
+        margin: 0 auto;
+    }
+
+    /* ----- Left sidebar ----- */
+    .sidebar {
+        position: sticky;
+        top: 64px;
+        height: calc(100vh - 64px);
+        overflow-y: auto;
+        padding: 28px 16px 60px 24px;
+        font-size: 14px;
+        scrollbar-width: thin;
+    }
+    .sidebar-group { margin-bottom: 22px; }
+    .sidebar-group > span {
+        display: block;
+        font-size: 13.5px;
+        font-weight: 600;
+        color: var(--fg);
+        margin-bottom: 6px;
+        letter-spacing: -0.01em;
+    }
+    .sidebar a {
+        display: block;
+        color: var(--fg-soft);
+        text-decoration: none;
+        padding: 5px 10px;
+        margin-inline-start: -10px;
+        border-radius: 7px;
+        line-height: 1.5;
+    }
+    .sidebar a:hover { color: var(--fg); background: var(--bg-hover); }
+    .sidebar a.active { color: var(--blue); background: var(--blue-soft); font-weight: 500; }
+    .sidebar a.filtered-out { display: none; }
+    .sidebar .no-results { display: none; color: var(--fg-faint); font-size: 13px; padding: 4px 0; }
+
+    /* ----- Content ----- */
+    .content { padding: 44px 48px 120px; min-width: 0; border-inline-start: 1px solid var(--border); border-inline-end: 1px solid var(--border); }
+    .article { max-width: 760px; margin: 0 auto; }
+
+    .eyebrow {
+        font-size: 13.5px;
+        font-weight: 600;
+        color: var(--blue);
+        margin-bottom: 8px;
+    }
+    h1 {
+        font-size: 38px;
+        font-weight: 700;
+        letter-spacing: -0.035em;
+        line-height: 1.15;
+        margin: 0 0 14px;
+    }
+    .lead { font-size: 16.5px; color: var(--fg-soft); margin: 0 0 24px; }
+    section { padding: 26px 0 6px; }
+    section + section { border-top: 1px solid var(--border); margin-top: 26px; }
+    h2 {
+        font-size: 24px;
+        font-weight: 600;
+        letter-spacing: -0.025em;
+        margin: 6px 0 14px;
+        scroll-margin-top: 90px;
+    }
+    h3 {
+        font-size: 17px;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+        margin: 28px 0 10px;
+        scroll-margin-top: 90px;
+    }
+    h2 .anchor, h3 .anchor {
+        margin-inline-start: 8px;
+        color: var(--fg-faint);
+        text-decoration: none;
+        opacity: 0;
+        font-weight: 400;
+    }
+    h2:hover .anchor, h3:hover .anchor { opacity: 1; }
+    p { margin: 0 0 14px; }
+    .article a { color: var(--blue); text-decoration: none; }
+    .article a:hover { text-decoration: underline; }
+    .muted { color: var(--fg-soft); font-size: 14px; }
+
+    code:not(pre code) {
+        font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+        font-size: 0.86em;
+        background: var(--bg-soft);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 2px 5px;
+        color: var(--fg);
+    }
+
+    /* ----- Callout ("Good to know") ----- */
+    .callout {
+        display: flex;
+        gap: 10px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        background: var(--bg-soft);
+        padding: 12px 16px;
+        font-size: 14px;
+        color: var(--fg-soft);
+        margin: 16px 0;
+    }
+    .callout b { color: var(--fg); font-weight: 600; }
+    #build-warning { display: none; }
+
+    /* ----- Code blocks ----- */
+    .code-block {
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        background: var(--code-bg);
+        margin: 16px 0 20px;
+        overflow: hidden;
+        box-shadow: var(--sh);
+    }
+    .code-head {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        height: 42px;
+        padding: 0 8px 0 16px;
+        border-bottom: 1px solid var(--border);
+        font-size: 13px;
+        color: var(--fg-soft);
+    }
+    .code-head .file {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 12.5px;
+    }
+    .code-head .file svg { color: var(--fg-faint); }
+    .copy-btn {
+        margin-inline-start: auto;
+        width: 30px; height: 30px;
+        display: grid; place-items: center;
+        border: none;
+        border-radius: 7px;
+        background: none;
+        color: var(--fg-faint);
+        cursor: pointer;
+    }
+    .copy-btn:hover { color: var(--fg); background: var(--bg-hover); }
+    .code-block pre {
+        margin: 0;
+        padding: 16px 18px;
+        overflow-x: auto;
+        font-size: 13.5px;
+        line-height: 1.75;
+    }
+    .code-block code {
+        font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+        color: var(--fg);
+    }
+    .tok-k { color: var(--tok-k); }
+    .tok-s { color: var(--tok-s); }
+    .tok-c { color: var(--tok-c); font-style: italic; }
+    .tok-n { color: var(--tok-n); }
+    .tok-f { color: var(--tok-f); }
+    .tok-a { color: var(--tok-a); }
+
+    /* Tabs inside a code frame */
+    .code-tabs .code-head { padding-inline-start: 6px; gap: 0; }
+    .code-tabs .code-head button.tab {
+        font-family: inherit;
+        font-size: 13px;
+        color: var(--fg-soft);
+        background: none;
+        border: none;
+        height: 42px;
+        padding: 0 13px;
+        cursor: pointer;
+        position: relative;
+    }
+    .code-tabs .code-head button.tab:hover { color: var(--fg); }
+    .code-tabs .code-head button.tab.active { color: var(--fg); font-weight: 500; }
+    .code-tabs .code-head button.tab.active::after {
+        content: "";
+        position: absolute;
+        left: 10px; right: 10px; bottom: -1px;
+        height: 2px;
+        background: var(--blue);
+        border-radius: 2px;
+    }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* ----- Tables ----- */
+    .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 12px; margin: 16px 0 20px; box-shadow: var(--sh); }
+    table { border-collapse: collapse; width: 100%; font-size: 14px; }
+    th, td { text-align: start; padding: 10px 16px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    th { font-weight: 500; color: var(--fg-soft); font-size: 13px; background: var(--bg-soft); }
+    tr:last-child td { border-bottom: none; }
+    td code { white-space: nowrap; }
+
+    /* ----- Buttons ----- */
+    .btn {
+        font-family: inherit;
+        font-size: 14px;
+        font-weight: 500;
+        height: 38px;
+        padding: 0 16px;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        background: var(--bg);
+        color: var(--fg);
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: background .15s, border-color .15s;
+    }
+    .btn:hover { background: var(--bg-hover); border-color: var(--fg-faint); }
+    .btn-primary { background: var(--btn-bg); border-color: var(--btn-bg); color: var(--btn-fg); }
+    .btn-primary:hover { opacity: 0.88; background: var(--btn-bg); }
+    .btn .dot { width: 8px; height: 8px; border-radius: 50%; flex: none; }
+    .dot-success { background: #04bb7b; }
+    .dot-error { background: #e5484d; }
+    .dot-warning { background: #f5a623; }
+    .dot-info { background: #0dcaf0; }
+    .btn-row { display: flex; flex-wrap: wrap; gap: 10px; margin: 16px 0; }
+
+    /* ----- Playground ----- */
+    .play {
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        margin: 16px 0 20px;
+        overflow: hidden;
+        box-shadow: var(--sh);
+    }
+    .play-body { padding: 20px; }
+    .play-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 14px;
+    }
+    .field { display: flex; flex-direction: column; gap: 5px; font-size: 13px; color: var(--fg-soft); }
+    .field input, .field select {
+        font-family: inherit;
+        font-size: 14px;
+        height: 36px;
+        padding: 0 10px;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        background: var(--bg);
+        color: var(--fg);
+        outline: none;
+    }
+    .field input:focus, .field select:focus { border-color: var(--blue); box-shadow: 0 0 0 3px var(--ring); }
+    .checks { display: flex; flex-wrap: wrap; gap: 6px 20px; margin: 16px 0 2px; }
+    .checks label { display: flex; align-items: center; gap: 8px; font-size: 14px; cursor: pointer; color: var(--fg); }
+    .checks input { accent-color: var(--blue); width: 15px; height: 15px; }
+    .play .code-block { margin: 0; border: none; border-top: 1px solid var(--border); border-radius: 0; box-shadow: none; }
+
+    /* ----- Right rail: On this page ----- */
+    .toc {
+        position: sticky;
+        top: 64px;
+        height: calc(100vh - 64px);
+        overflow-y: auto;
+        padding: 32px 24px 60px 20px;
+        font-size: 13px;
+        scrollbar-width: thin;
+    }
+    .toc-title {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--fg);
+        margin-bottom: 10px;
+    }
+    .toc a {
+        display: block;
+        color: var(--fg-soft);
+        text-decoration: none;
+        padding: 3px 0;
+        line-height: 1.5;
+    }
+    .toc a:hover { color: var(--fg); }
+    .toc a.active { color: var(--blue); }
+    .toc a.lvl-3 { padding-inline-start: 14px; }
+    .toc-top {
+        margin-top: 18px;
+        padding-top: 14px;
+        border-top: 1px solid var(--border);
+        color: var(--fg-soft) !important;
+        display: inline-flex !important;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .footer {
+        margin-top: 40px;
+        padding-top: 24px;
+        border-top: 1px solid var(--border);
+        color: var(--fg-soft);
+        font-size: 14px;
+    }
+
+    @media (max-width: 1280px) {
+        .shell { grid-template-columns: 264px minmax(0, 1fr); }
+        .toc { display: none; }
+        .content { border-inline-end: none; }
+    }
+    @media (max-width: 960px) {
+        .shell { grid-template-columns: 1fr; }
+        .sidebar { display: none; }
+        .content { border-inline-start: none; padding: 32px 22px 90px; }
+        .nav-search { width: 160px; }
+        .nav-crumb, .nav-sep { display: none; }
+    }
+</style>
+</head>
+<body>
+
+<header class="nav">
+    <a class="nav-brand" href="#top">
+        <span class="nav-logo">T</span>
+        <b>Toaster Magic</b>
+    </a>
+    <span class="nav-sep">/</span>
+    <span class="nav-crumb">Docs</span>
+    <div class="nav-right">
+        <label class="nav-search" for="search-input">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+            <input id="search-input" type="text" placeholder="Search sections..." autocomplete="off">
+            <kbd>⌘K</kbd>
+        </label>
+        <a class="nav-link" href="https://www.npmjs.com/package/toaster-magic" target="_blank" rel="noopener">npm</a>
+        <a class="nav-link" href="https://github.com/devrabiul/laravel-toaster-magic" target="_blank" rel="noopener">GitHub</a>
+        <button class="nav-icon-btn" id="theme-toggle" title="Toggle theme" aria-label="Toggle theme">
+            <svg id="icon-moon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            <svg id="icon-sun" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="display:none"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41m11.32-11.32 1.41-1.41"/></svg>
+        </button>
+    </div>
+</header>
+
+<div class="shell">
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-group">
+            <span>Getting Started</span>
+            <a href="#introduction">Introduction</a>
+            <a href="#installation">Installation</a>
+            <a href="#quick-start">Quick Start</a>
+            <a href="#playground">Playground</a>
+        </div>
+        <div class="sidebar-group">
+            <span>Frameworks</span>
+            <a href="#frameworks">React, Vue, Next.js, Nuxt</a>
+            <a href="#cdn">CDN / Script Tag</a>
+        </div>
+        <div class="sidebar-group">
+            <span>Guides</span>
+            <a href="#configuration">Configuration</a>
+            <a href="#toast-options">Toast Options</a>
+            <a href="#themes">Themes</a>
+            <a href="#positions">Positions</a>
+            <a href="#animations">Animations</a>
+            <a href="#dark-mode">Dark Mode</a>
+        </div>
+        <div class="sidebar-group">
+            <span>Reference</span>
+            <a href="#api">API Reference</a>
+            <a href="#security">Security</a>
+            <a href="#license">License</a>
+        </div>
+        <p class="no-results" id="no-results">No results found.</p>
+    </aside>
+
+    <main class="content" id="top">
+        <div class="article">
+
+            <section id="introduction" style="border-top:none; padding-top:0;">
+                <p class="eyebrow">Getting Started</p>
+                <h1>Toaster Magic</h1>
+                <p class="lead">
+                    Lightweight, dependency-free toast notifications with beautiful themes — the standalone
+                    JavaScript version of <a href="https://github.com/devrabiul/laravel-toaster-magic" target="_blank" rel="noopener">Laravel Toaster Magic</a>.
+                    Works with React, Vue, Next.js, Nuxt, Svelte, or plain JavaScript.
+                </p>
+                <div class="btn-row">
+                    <button class="btn btn-primary" onclick="tm().success('Welcome!', 'This page is the live demo — every button is real.')">Show a toast</button>
+                    <button class="btn" onclick="document.getElementById('playground').scrollIntoView()">Open playground</button>
+                </div>
+                <div class="callout">
+                    <span>💡</span>
+                    <span><b>Good to know:</b> zero dependencies, ~5&nbsp;KB min+gzip, SSR-safe imports, TypeScript types included,
+                    and HTML is escaped by default.</span>
+                </div>
+                <div class="callout" id="build-warning">
+                    <span>⚠️</span>
+                    <span><b>Live demos disabled:</b> <code>dist/</code> was not found. Run
+                    <code>npm install &amp;&amp; npm run build</code> in <code>packages/toaster-magic</code>, then reload this page.</span>
+                </div>
+            </section>
+
+            <section id="installation">
+                <h2>Installation</h2>
+                <div class="code-block" data-file="Terminal">
+<pre><code class="lang-bash">npm install toaster-magic</code></pre></div>
+                <p>Import the module and the stylesheet once:</p>
+                <div class="code-block" data-file="app.js">
+<pre><code class="lang-js">import { toastMagic } from "toaster-magic";
+import "toaster-magic/css"; // or "toaster-magic/css/min"</code></pre></div>
+            </section>
+
+            <section id="quick-start">
+                <h2>Quick Start</h2>
+                <div class="code-block" data-file="app.js">
+<pre><code class="lang-js">toastMagic.success("Success!", "Your data has been saved.");
+toastMagic.error("Oops", "Something went wrong.");
+toastMagic.warning("Heads up", "Storage almost full.");
+toastMagic.info("FYI", "A new version is available.");</code></pre></div>
+                <div class="btn-row">
+                    <button class="btn" onclick="tm().success('Success!', 'Your data has been saved.')"><span class="dot dot-success"></span>success</button>
+                    <button class="btn" onclick="tm().error('Oops', 'Something went wrong.')"><span class="dot dot-error"></span>error</button>
+                    <button class="btn" onclick="tm().warning('Heads up', 'Storage almost full.')"><span class="dot dot-warning"></span>warning</button>
+                    <button class="btn" onclick="tm().info('FYI', 'A new version is available.')"><span class="dot dot-info"></span>info</button>
+                </div>
+                <h3 id="per-toast-options">Per-toast options</h3>
+                <p>Pass an options object as the third argument:</p>
+                <div class="code-block" data-file="app.js">
+<pre><code class="lang-js">toastMagic.success("Order shipped", "Track your package anytime.", {
+  showCloseBtn: true,
+  customBtnText: "Track",
+  customBtnLink: "/orders/42",
+  timeOut: 8000, // ms, overrides the global default
+});</code></pre></div>
+                <div class="btn-row">
+                    <button class="btn" onclick="tm().success('Order shipped', 'Track your package anytime.', { showCloseBtn: true, customBtnText: 'Track', customBtnLink: '#', timeOut: 8000 })">Run this example</button>
+                </div>
+            </section>
+
+            <section id="playground">
+                <h2>Playground</h2>
+                <p>Build a toast interactively — the generated code updates as you change options.</p>
+                <div class="play">
+                    <div class="play-body">
+                        <div class="play-grid">
+                            <label class="field">Type
+                                <select id="pg-type">
+                                    <option value="success">success</option>
+                                    <option value="error">error</option>
+                                    <option value="warning">warning</option>
+                                    <option value="info">info</option>
+                                </select>
+                            </label>
+                            <label class="field">Heading
+                                <input type="text" id="pg-heading" value="Success!">
+                            </label>
+                            <label class="field">Description
+                                <input type="text" id="pg-description" value="Your data has been saved.">
+                            </label>
+                            <label class="field">Timeout (ms)
+                                <input type="number" id="pg-timeout" value="5000" step="500" min="500">
+                            </label>
+                            <label class="field">Theme
+                                <select id="pg-theme">
+                                    <option value="default">default</option>
+                                    <option value="material">material</option>
+                                    <option value="ios">ios</option>
+                                    <option value="glassmorphism">glassmorphism</option>
+                                    <option value="neon">neon</option>
+                                    <option value="minimal">minimal</option>
+                                    <option value="neumorphism">neumorphism</option>
+                                </select>
+                            </label>
+                            <label class="field">Position
+                                <select id="pg-position">
+                                    <option value="toast-top-end">toast-top-end</option>
+                                    <option value="toast-top-start">toast-top-start</option>
+                                    <option value="toast-top-center">toast-top-center</option>
+                                    <option value="toast-bottom-end">toast-bottom-end</option>
+                                    <option value="toast-bottom-start">toast-bottom-start</option>
+                                    <option value="toast-bottom-center">toast-bottom-center</option>
+                                </select>
+                            </label>
+                            <label class="field">Animation
+                                <select id="pg-animation">
+                                    <option value="default">default</option>
+                                    <option value="slide">slide</option>
+                                    <option value="fade">fade</option>
+                                    <option value="pop">pop</option>
+                                    <option value="bounce">bounce</option>
+                                </select>
+                            </label>
+                        </div>
+                        <div class="checks">
+                            <label><input type="checkbox" id="pg-close" checked> Close button</label>
+                            <label><input type="checkbox" id="pg-action"> Action button</label>
+                            <label><input type="checkbox" id="pg-avatar"> Avatar</label>
+                            <label><input type="checkbox" id="pg-gradient"> Gradient</label>
+                            <label><input type="checkbox" id="pg-colormode"> Color mode</label>
+                            <label><input type="checkbox" id="pg-duplicates"> Prevent duplicates</label>
+                        </div>
+                        <div class="btn-row" style="margin-bottom:0;">
+                            <button class="btn btn-primary" id="pg-show">Show toast</button>
+                            <button class="btn" onclick="tm().clear()">Clear all</button>
+                        </div>
+                    </div>
+                    <div class="code-block" data-file="playground.js">
+<pre><code class="lang-js" id="pg-code"></code></pre></div>
+                </div>
+            </section>
+
+            <section id="frameworks">
+                <h2>React, Vue, Next.js, Nuxt</h2>
+                <p>
+                    There is no provider, portal, or <code>&lt;ToastContainer /&gt;</code> component to mount —
+                    the container is created automatically on the first toast. Importing is SSR-safe, so the
+                    same import works in Next.js and Nuxt; just trigger toasts from client-side code
+                    (event handlers, effects).
+                </p>
+                <div class="code-block code-tabs" data-tabs>
+                    <div class="code-head">
+                        <button class="tab active">React</button>
+                        <button class="tab">Next.js</button>
+                        <button class="tab">Vue</button>
+                        <button class="tab">Nuxt</button>
+                    </div>
+                    <div class="tab-panel active"><pre><code class="lang-js">import { toastMagic } from "toaster-magic";
+import "toaster-magic/css";
+
+export function SaveButton() {
+  return (
+    &lt;button onClick={() =&gt; toastMagic.success("Saved!", "Profile updated.")}&gt;
+      Save
+    &lt;/button&gt;
+  );
+}</code></pre></div>
+                    <div class="tab-panel"><pre><code class="lang-js">// app/layout.tsx — load the styles once, globally
+import "toaster-magic/css";
+
+// Any client component:
+"use client";
+import { toastMagic } from "toaster-magic";
+
+export function SaveButton() {
+  return (
+    &lt;button onClick={() =&gt; toastMagic.success("Saved!", "Profile updated.")}&gt;
+      Save
+    &lt;/button&gt;
+  );
+}</code></pre></div>
+                    <div class="tab-panel"><pre><code class="lang-html">&lt;script setup&gt;
+import { toastMagic } from "toaster-magic";
+import "toaster-magic/css";
+
+function save() {
+  toastMagic.success("Saved!", "Your changes are live.");
+}
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;button @click="save"&gt;Save&lt;/button&gt;
+&lt;/template&gt;</code></pre></div>
+                    <div class="tab-panel"><pre><code class="lang-js">// nuxt.config.ts — register the stylesheet globally
+export default defineNuxtConfig({
+  css: ["toaster-magic/css"],
+});
+
+// Then use it in any component or composable:
+import { toastMagic } from "toaster-magic";
+toastMagic.success("Saved!", "Your changes are live.");</code></pre></div>
+                </div>
+            </section>
+
+            <section id="cdn">
+                <h2>CDN / Script Tag</h2>
+                <p>The global build exposes <code>window.toastMagic</code> and supports declarative <code>data-toast-*</code> triggers:</p>
+                <div class="code-block" data-file="index.html">
+<pre><code class="lang-html">&lt;link rel="stylesheet" href="https://unpkg.com/toaster-magic/dist/toaster-magic.min.css"&gt;
+&lt;script src="https://unpkg.com/toaster-magic/dist/toaster-magic.global.js"&gt;&lt;/script&gt;
+&lt;script&gt;
+  toastMagic.success("Hello!", "It just works.");
+&lt;/script&gt;
+
+&lt;!-- Declarative triggers — no JavaScript needed --&gt;
+&lt;button
+  data-toast-type="success"
+  data-toast-heading="Copied"
+  data-toast-description="Link copied to clipboard"
+  data-toast-close-btn
+&gt;Copy&lt;/button&gt;</code></pre></div>
+                <div class="btn-row">
+                    <button class="btn"
+                        data-toast-type="success"
+                        data-toast-heading="Copied"
+                        data-toast-description="Link copied to clipboard"
+                        data-toast-close-btn>Try the declarative trigger</button>
+                </div>
+                <div class="callout">
+                    <span>💡</span>
+                    <span><b>Good to know:</b> an existing <code>window.toastMagicConfig</code> object (as emitted by the
+                    Laravel package, snake_case keys included) is picked up automatically, so the CDN build is a
+                    drop-in replacement for the Laravel asset.</span>
+                </div>
+            </section>
+
+            <section id="configuration">
+                <h2>Configuration</h2>
+                <p>Configure the shared singleton once, anywhere before (or after) the first toast:</p>
+                <div class="code-block" data-file="app.js">
+<pre><code class="lang-js">import { configure } from "toaster-magic";
+
+configure({
+  positionClass: "toast-bottom-end",
+  theme: "glassmorphism",
+  animation: "slide",
+  closeButton: true,
+  preventDuplicates: true,
+  timeOut: 5000,
+  pauseOnHover: true,
+  gradientEnable: false,
+  colorMode: false,
+});</code></pre></div>
+                <div class="table-wrap"><table>
+                    <tr><th>Option</th><th>Type</th><th>Default</th><th>Description</th></tr>
+                    <tr><td><code>positionClass</code></td><td><code>string</code></td><td><code>"toast-top-end"</code></td><td>Where the toast stack is anchored. See <a href="#positions">Positions</a>.</td></tr>
+                    <tr><td><code>closeButton</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Show a close button on every toast unless overridden per toast.</td></tr>
+                    <tr><td><code>preventDuplicates</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Skip a toast when an identical one (type + heading + description) is visible.</td></tr>
+                    <tr><td><code>showDuration</code></td><td><code>number</code></td><td><code>100</code></td><td>Delay in ms before the entrance animation plays.</td></tr>
+                    <tr><td><code>timeOut</code></td><td><code>number</code></td><td><code>5000</code></td><td>Auto-dismiss timeout in ms.</td></tr>
+                    <tr><td><code>theme</code></td><td><code>string</code></td><td><code>"default"</code></td><td>Visual theme. See <a href="#themes">Themes</a>.</td></tr>
+                    <tr><td><code>animation</code></td><td><code>string</code></td><td><code>"default"</code></td><td>Entrance/exit animation. See <a href="#animations">Animations</a>.</td></tr>
+                    <tr><td><code>pauseOnHover</code></td><td><code>boolean</code></td><td><code>true</code></td><td>Pause the auto-dismiss timer while the toast is hovered.</td></tr>
+                    <tr><td><code>gradientEnable</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Gradient accent styling (default, material, ios, glassmorphism, neon themes).</td></tr>
+                    <tr><td><code>colorMode</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Colored toast background per type.</td></tr>
+                </table></div>
+                <h3 id="multiple-instances">Multiple independent instances</h3>
+                <div class="code-block" data-file="app.js">
+<pre><code class="lang-js">import { ToastMagic } from "toaster-magic";
+
+const alerts = new ToastMagic({ theme: "neon", positionClass: "toast-bottom-center" });
+alerts.warning("Independent", "This instance has its own config.");</code></pre></div>
+            </section>
+
+            <section id="toast-options">
+                <h2>Toast Options</h2>
+                <p>Every option can also be set per toast as the third argument (or inside <code>show()</code>):</p>
+                <div class="table-wrap"><table>
+                    <tr><th>Option</th><th>Type</th><th>Default</th><th>Description</th></tr>
+                    <tr><td><code>showCloseBtn</code></td><td><code>boolean</code></td><td>config <code>closeButton</code></td><td>Show a close button on this toast.</td></tr>
+                    <tr><td><code>customBtnText</code></td><td><code>string</code></td><td>–</td><td>Label for an action link button (rendered only with <code>customBtnLink</code>).</td></tr>
+                    <tr><td><code>customBtnLink</code></td><td><code>string</code></td><td>–</td><td>URL for the action button. Unsafe URLs are replaced with <code>#</code>.</td></tr>
+                    <tr><td><code>timeOut</code></td><td><code>number</code></td><td>config <code>timeOut</code></td><td>Auto-dismiss ms for this toast.</td></tr>
+                    <tr><td><code>showDuration</code></td><td><code>number</code></td><td>config <code>showDuration</code></td><td>Entrance delay ms for this toast.</td></tr>
+                    <tr><td><code>avatar</code></td><td><code>string</code></td><td>–</td><td>Image URL rendered instead of the type icon.</td></tr>
+                    <tr><td><code>allowHtml</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Render heading/description as raw HTML. Trusted content only.</td></tr>
+                </table></div>
+                <div class="btn-row">
+                    <button class="btn" onclick="tm().info('New follower', 'Alex started following you.', { avatar: avatarDataUri, showCloseBtn: true })">Avatar toast</button>
+                    <button class="btn" onclick="tm().info('Rich content', '&lt;b&gt;Bold&lt;/b&gt; and &lt;i&gt;italic&lt;/i&gt; via allowHtml.', { allowHtml: true })">allowHtml toast</button>
+                </div>
+            </section>
+
+            <section id="themes">
+                <h2>Themes</h2>
+                <p>Seven built-in themes, switchable at runtime with <code>configure({ theme })</code>. Click one to preview:</p>
+                <div class="code-block" data-file="app.js">
+<pre><code class="lang-js">configure({ theme: "glassmorphism" }); // default | material | ios | glassmorphism | neon | minimal | neumorphism</code></pre></div>
+                <div class="btn-row">
+                    <button class="btn" data-demo-theme="default">default</button>
+                    <button class="btn" data-demo-theme="material">material</button>
+                    <button class="btn" data-demo-theme="ios">ios</button>
+                    <button class="btn" data-demo-theme="glassmorphism">glassmorphism</button>
+                    <button class="btn" data-demo-theme="neon">neon</button>
+                    <button class="btn" data-demo-theme="minimal">minimal</button>
+                    <button class="btn" data-demo-theme="neumorphism">neumorphism</button>
+                </div>
+            </section>
+
+            <section id="positions">
+                <h2>Positions</h2>
+                <p>Six anchor positions; <code>start</code>/<code>end</code> are logical properties, so RTL layouts mirror automatically:</p>
+                <div class="code-block" data-file="app.js">
+<pre><code class="lang-js">configure({ positionClass: "toast-bottom-center" });</code></pre></div>
+                <div class="btn-row">
+                    <button class="btn" data-demo-position="toast-top-start">top-start</button>
+                    <button class="btn" data-demo-position="toast-top-center">top-center</button>
+                    <button class="btn" data-demo-position="toast-top-end">top-end</button>
+                    <button class="btn" data-demo-position="toast-bottom-start">bottom-start</button>
+                    <button class="btn" data-demo-position="toast-bottom-center">bottom-center</button>
+                    <button class="btn" data-demo-position="toast-bottom-end">bottom-end</button>
+                </div>
+            </section>
+
+            <section id="animations">
+                <h2>Animations</h2>
+                <p>
+                    Entrance/exit animation styles, plus a smooth FLIP reflow that glides the stack when toasts
+                    are added or removed (automatically disabled for users with <code>prefers-reduced-motion</code>):
+                </p>
+                <div class="code-block" data-file="app.js">
+<pre><code class="lang-js">configure({ animation: "bounce" }); // default | slide | fade | pop | bounce</code></pre></div>
+                <div class="btn-row">
+                    <button class="btn" data-demo-animation="default">default</button>
+                    <button class="btn" data-demo-animation="slide">slide</button>
+                    <button class="btn" data-demo-animation="fade">fade</button>
+                    <button class="btn" data-demo-animation="pop">pop</button>
+                    <button class="btn" data-demo-animation="bounce">bounce</button>
+                </div>
+            </section>
+
+            <section id="dark-mode">
+                <h2>Dark Mode</h2>
+                <p>
+                    Set <code>theme="dark"</code> on <code>&lt;body&gt;</code> and toasts follow automatically
+                    (this page's theme toggle does exactly that), or override the CSS custom properties yourself:
+                </p>
+                <div class="code-block" data-file="index.html">
+<pre><code class="lang-html">&lt;body theme="dark"&gt;</code></pre></div>
+                <div class="code-block" data-file="styles.css">
+<pre><code class="lang-js">/* Or with your own palette */
+:root {
+  --toast-item-bg: #1e293b;
+  --toast-item-color: #f1f5f9;
+}</code></pre></div>
+                <div class="btn-row">
+                    <button class="btn" onclick="toggleTheme(); tm().info('Theme switched', 'Toasts follow body[theme] automatically.')">Toggle dark mode + toast</button>
+                </div>
+            </section>
+
+            <section id="api">
+                <h2>API Reference</h2>
+                <div class="table-wrap"><table>
+                    <tr><th>Method</th><th>Description</th></tr>
+                    <tr><td><code>toastMagic.success(heading, description?, options?)</code></td><td>Show a success toast.</td></tr>
+                    <tr><td><code>toastMagic.error(...)</code> / <code>.warning(...)</code> / <code>.info(...)</code></td><td>Other toast types, same signature.</td></tr>
+                    <tr><td><code>toastMagic.show({ type, heading, ... })</code></td><td>Fully explicit form.</td></tr>
+                    <tr><td><code>toastMagic.clear()</code> / <code>.dismissAll()</code></td><td>Dismiss all visible toasts.</td></tr>
+                    <tr><td><code>toastMagic.configure(options)</code> / <code>configure(options)</code></td><td>Update the config (the named export targets the shared singleton).</td></tr>
+                    <tr><td><code>toastMagic.getConfig()</code></td><td>A copy of the active configuration.</td></tr>
+                    <tr><td><code>new ToastMagic(options?)</code></td><td>Independent instance with its own config.</td></tr>
+                </table></div>
+                <h3 id="legacy-signature">Legacy positional signature</h3>
+                <p>For drop-in compatibility with the Laravel asset, the positional form still works:</p>
+                <div class="code-block" data-file="app.js">
+<pre><code class="lang-js">toastMagic.success(heading, description, showCloseBtn, customBtnText, customBtnLink, timeOut, showDuration, avatar);</code></pre></div>
+            </section>
+
+            <section id="security">
+                <h2>Security</h2>
+                <p>
+                    Heading, description, and button text are <b>HTML-escaped by default</b>, so passing
+                    user-generated content is safe. Opt out per toast with <code>allowHtml: true</code> for
+                    trusted content only. <code>customBtnLink</code> and <code>avatar</code> URLs are
+                    sanitized — anything that isn't <code>http(s)://</code>, <code>/</code>, or <code>#</code>
+                    is replaced with <code>#</code>, which blocks <code>javascript:</code> URLs.
+                </p>
+                <div class="btn-row">
+                    <button class="btn" onclick="tm().info('&lt;img src=x onerror=alert(1)&gt;', 'The heading above was escaped, not executed.')">Prove it: XSS attempt</button>
+                </div>
+            </section>
+
+            <section id="license">
+                <h2>License</h2>
+                <p class="footer" style="margin-top:0; padding-top:0; border-top:none;">
+                    MIT © <a href="https://github.com/devrabiul" target="_blank" rel="noopener">Muhammad Rabiul</a>
+                    — part of the <a href="https://github.com/devrabiul/laravel-toaster-magic" target="_blank" rel="noopener">Laravel Toaster Magic</a> project.
+                </p>
+            </section>
+
+        </div>
+    </main>
+
+    <aside class="toc">
+        <p class="toc-title">On this page</p>
+        <nav id="toc-nav"></nav>
+        <a class="toc-top" href="#top">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>
+            Back to top
+        </a>
+    </aside>
+
+</div>
+
+<script src="./dist/toaster-magic.global.js"></script>
+<script>
+    // A tiny inline avatar so the demo needs no network.
+    const avatarDataUri = "data:image/svg+xml," + encodeURIComponent(
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><circle cx="32" cy="32" r="32" fill="#04bb7b"/><circle cx="32" cy="25" r="11" fill="#fff"/><path d="M12 56a20 20 0 0 1 40 0z" fill="#fff"/></svg>'
+    );
+
+    // Guard: live demos need the local build.
+    function tm() {
+        if (typeof window.toastMagic === "undefined") {
+            document.getElementById("build-warning").style.display = "flex";
+            const noop = () => {};
+            return { success: noop, error: noop, warning: noop, info: noop, clear: noop, configure: noop };
+        }
+        return window.toastMagic;
+    }
+    if (typeof window.ToastMagic === "undefined") {
+        document.getElementById("build-warning").style.display = "flex";
+    }
+
+    // ---------- Theme (light/dark) ----------
+    function applyThemeIcon() {
+        const dark = document.body.getAttribute("theme") === "dark";
+        document.getElementById("icon-moon").style.display = dark ? "none" : "block";
+        document.getElementById("icon-sun").style.display = dark ? "block" : "none";
+    }
+    function toggleTheme() {
+        if (document.body.getAttribute("theme") === "dark") document.body.removeAttribute("theme");
+        else document.body.setAttribute("theme", "dark");
+        applyThemeIcon();
+    }
+    if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+        document.body.setAttribute("theme", "dark");
+    }
+    applyThemeIcon();
+    document.getElementById("theme-toggle").addEventListener("click", toggleTheme);
+
+    // ---------- Heading anchors ----------
+    document.querySelectorAll(".article h2, .article h3").forEach((h) => {
+        const target = h.closest("section");
+        const id = h.id || (target && target.id);
+        if (!id) return;
+        const a = document.createElement("a");
+        a.className = "anchor";
+        a.href = "#" + id;
+        a.textContent = "#";
+        a.setAttribute("aria-label", "Link to this section");
+        h.appendChild(a);
+    });
+
+    // ---------- Demo buttons: theme / position / animation ----------
+    document.querySelectorAll("[data-demo-theme]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+            const theme = btn.dataset.demoTheme;
+            tm().configure({ theme });
+            tm().success(theme.charAt(0).toUpperCase() + theme.slice(1) + " theme", 'configure({ theme: "' + theme + '" })', { showCloseBtn: true });
+            syncPlayground({ theme });
+        });
+    });
+    document.querySelectorAll("[data-demo-position]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+            const positionClass = btn.dataset.demoPosition;
+            tm().configure({ positionClass });
+            tm().info("Position", positionClass);
+            syncPlayground({ positionClass });
+        });
+    });
+    document.querySelectorAll("[data-demo-animation]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+            const animation = btn.dataset.demoAnimation;
+            tm().configure({ animation });
+            tm().success("Animation", 'configure({ animation: "' + animation + '" })');
+            syncPlayground({ animation });
+        });
+    });
+
+    // ---------- Playground ----------
+    const pg = (id) => document.getElementById("pg-" + id);
+    function syncPlayground(config) {
+        if (config.theme) pg("theme").value = config.theme;
+        if (config.positionClass) pg("position").value = config.positionClass;
+        if (config.animation) pg("animation").value = config.animation;
+        renderPlaygroundCode();
+    }
+    function playgroundState() {
+        return {
+            type: pg("type").value,
+            heading: pg("heading").value,
+            description: pg("description").value,
+            timeOut: parseInt(pg("timeout").value, 10) || 5000,
+            theme: pg("theme").value,
+            positionClass: pg("position").value,
+            animation: pg("animation").value,
+            showCloseBtn: pg("close").checked,
+            action: pg("action").checked,
+            avatar: pg("avatar").checked,
+            gradientEnable: pg("gradient").checked,
+            colorMode: pg("colormode").checked,
+            preventDuplicates: pg("duplicates").checked,
+        };
+    }
+    function renderPlaygroundCode() {
+        const s = playgroundState();
+        const q = (v) => '"' + String(v).replace(/\\/g, "\\\\").replace(/"/g, '\\"') + '"';
+        const cfg = [];
+        if (s.theme !== "default") cfg.push("  theme: " + q(s.theme));
+        if (s.positionClass !== "toast-top-end") cfg.push("  positionClass: " + q(s.positionClass));
+        if (s.animation !== "default") cfg.push("  animation: " + q(s.animation));
+        if (s.gradientEnable) cfg.push("  gradientEnable: true");
+        if (s.colorMode) cfg.push("  colorMode: true");
+        if (s.preventDuplicates) cfg.push("  preventDuplicates: true");
+
+        const opts = [];
+        if (s.showCloseBtn) opts.push("  showCloseBtn: true");
+        if (s.action) { opts.push('  customBtnText: "View"'); opts.push('  customBtnLink: "/orders/42"'); }
+        if (s.avatar) opts.push('  avatar: "/img/avatar.png"');
+        if (s.timeOut !== 5000) opts.push("  timeOut: " + s.timeOut);
+
+        let code = 'import { toastMagic, configure } from "toaster-magic";\nimport "toaster-magic/css";\n';
+        if (cfg.length) code += "\nconfigure({\n" + cfg.join(",\n") + ",\n});\n";
+        code += "\ntoastMagic." + s.type + "(" + q(s.heading);
+        if (s.description || opts.length) code += ", " + q(s.description);
+        if (opts.length) code += ", {\n" + opts.join(",\n") + ",\n}";
+        code += ");";
+
+        const el = document.getElementById("pg-code");
+        el.textContent = code;
+        highlightBlock(el);
+    }
+    function runPlayground() {
+        const s = playgroundState();
+        tm().configure({
+            theme: s.theme,
+            positionClass: s.positionClass,
+            animation: s.animation,
+            gradientEnable: s.gradientEnable,
+            colorMode: s.colorMode,
+            preventDuplicates: s.preventDuplicates,
+        });
+        tm()[s.type](s.heading, s.description, {
+            showCloseBtn: s.showCloseBtn,
+            customBtnText: s.action ? "View" : "",
+            customBtnLink: s.action ? "#" : "",
+            avatar: s.avatar ? avatarDataUri : "",
+            timeOut: s.timeOut,
+        });
+    }
+    document.getElementById("pg-show").addEventListener("click", runPlayground);
+    document.querySelectorAll(".play select, .play input").forEach((el) => {
+        el.addEventListener("input", renderPlaygroundCode);
+    });
+
+    // ---------- Tabs ----------
+    document.querySelectorAll("[data-tabs]").forEach((tabs) => {
+        const buttons = tabs.querySelectorAll(".code-head .tab");
+        const panels = tabs.querySelectorAll(".tab-panel");
+        buttons.forEach((btn, i) => {
+            btn.addEventListener("click", () => {
+                buttons.forEach((b) => b.classList.remove("active"));
+                panels.forEach((p) => p.classList.remove("active"));
+                btn.classList.add("active");
+                panels[i].classList.add("active");
+            });
+        });
+    });
+
+    // ---------- Syntax highlighting (tiny, self-contained) ----------
+    function highlightBlock(el) {
+        const code = el.textContent;
+        const escapeHtml = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        let html;
+        if (el.classList.contains("lang-bash")) {
+            html = escapeHtml(code).replace(/^(npm|npx|node|cd)\b/gm, '<span class="tok-k">$1</span>');
+        } else if (el.classList.contains("lang-html")) {
+            html = escapeHtml(code)
+                .replace(/(&lt;\/?)([a-zA-Z][\w-]*)/g, '$1<span class="tok-f">$2</span>')
+                .replace(/([\w-]+)(=)(&quot;[^&]*?&quot;|"[^"]*?")/g, '<span class="tok-a">$1</span>$2<span class="tok-s">$3</span>');
+        } else {
+            const re = /(\/\/[^\n]*|\/\*[\s\S]*?\*\/)|("(?:[^"\\\n]|\\.)*"|'(?:[^'\\\n]|\\.)*'|`(?:[^`\\]|\\.)*`)|\b(import|from|export|const|let|var|function|return|new|default|if|else|true|false|null|defineNuxtConfig)\b|\b(\d+)\b/g;
+            html = "";
+            let last = 0, m;
+            while ((m = re.exec(code)) !== null) {
+                html += escapeHtml(code.slice(last, m.index));
+                if (m[1]) html += '<span class="tok-c">' + escapeHtml(m[1]) + "</span>";
+                else if (m[2]) html += '<span class="tok-s">' + escapeHtml(m[2]) + "</span>";
+                else if (m[3]) html += '<span class="tok-k">' + escapeHtml(m[3]) + "</span>";
+                else if (m[4]) html += '<span class="tok-n">' + escapeHtml(m[4]) + "</span>";
+                last = m.index + m[0].length;
+            }
+            html += escapeHtml(code.slice(last));
+        }
+        el.innerHTML = html;
+    }
+    document.querySelectorAll(".code-block code").forEach(highlightBlock);
+
+    // ---------- Code block headers (filename + copy) ----------
+    const copyIcon = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="13" height="13" x="9" y="9" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>';
+    const checkIcon = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
+    const fileIcon = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M15 2v5h5"/></svg>';
+    const termIcon = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m4 17 6-6-6-6"/><path d="M12 19h8"/></svg>';
+
+    function makeCopyBtn(getText) {
+        const btn = document.createElement("button");
+        btn.className = "copy-btn";
+        btn.innerHTML = copyIcon;
+        btn.setAttribute("aria-label", "Copy code");
+        btn.addEventListener("click", () => {
+            navigator.clipboard.writeText(getText()).then(() => {
+                btn.innerHTML = checkIcon;
+                setTimeout(() => (btn.innerHTML = copyIcon), 1500);
+            });
+        });
+        return btn;
+    }
+
+    document.querySelectorAll(".code-block[data-file]").forEach((block) => {
+        const head = document.createElement("div");
+        head.className = "code-head";
+        const name = block.dataset.file;
+        head.innerHTML = '<span class="file">' + (name === "Terminal" ? termIcon : fileIcon) + name + "</span>";
+        head.appendChild(makeCopyBtn(() => block.querySelector("code").textContent));
+        block.prepend(head);
+    });
+    document.querySelectorAll(".code-tabs").forEach((block) => {
+        block.querySelector(".code-head").appendChild(
+            makeCopyBtn(() => block.querySelector(".tab-panel.active code").textContent)
+        );
+    });
+
+    // ---------- "On this page" TOC ----------
+    const tocNav = document.getElementById("toc-nav");
+    document.querySelectorAll(".article section").forEach((section) => {
+        const h2 = section.querySelector("h2, h1");
+        if (!h2) return;
+        const a = document.createElement("a");
+        a.href = "#" + section.id;
+        a.textContent = h2.childNodes[0].textContent.trim();
+        tocNav.appendChild(a);
+        section.querySelectorAll("h3[id]").forEach((h3) => {
+            const sub = document.createElement("a");
+            sub.href = "#" + h3.id;
+            sub.className = "lvl-3";
+            sub.textContent = h3.childNodes[0].textContent.trim();
+            tocNav.appendChild(sub);
+        });
+    });
+
+    // ---------- Scrollspy (sidebar + TOC) ----------
+    if ("IntersectionObserver" in window) {
+        const links = Array.from(document.querySelectorAll(".sidebar a, .toc a"))
+            .filter((a) => a.getAttribute("href") !== "#top");
+        const spy = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (!entry.isIntersecting) return;
+                    const id = "#" + entry.target.id;
+                    links.forEach((a) => a.classList.toggle("active", a.getAttribute("href") === id));
+                });
+            },
+            { rootMargin: "-15% 0px -75% 0px" }
+        );
+        document.querySelectorAll(".article section").forEach((s) => spy.observe(s));
+    }
+
+    // ---------- Search (filters the sidebar) ----------
+    const searchInput = document.getElementById("search-input");
+    const sidebarLinks = Array.from(document.querySelectorAll(".sidebar a"));
+    searchInput.addEventListener("input", () => {
+        const q = searchInput.value.trim().toLowerCase();
+        let any = false;
+        sidebarLinks.forEach((a) => {
+            const hit = !q || a.textContent.toLowerCase().includes(q);
+            a.classList.toggle("filtered-out", !hit);
+            if (hit) any = true;
+        });
+        document.querySelectorAll(".sidebar-group").forEach((g) => {
+            const visible = g.querySelectorAll("a:not(.filtered-out)").length > 0;
+            g.style.display = visible ? "" : "none";
+        });
+        document.getElementById("no-results").style.display = any ? "none" : "block";
+    });
+    searchInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+            const first = sidebarLinks.find((a) => !a.classList.contains("filtered-out"));
+            if (first) { first.click(); searchInput.blur(); }
+        }
+        if (e.key === "Escape") {
+            searchInput.value = "";
+            searchInput.dispatchEvent(new Event("input"));
+            searchInput.blur();
+        }
+    });
+    document.addEventListener("keydown", (e) => {
+        if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+            e.preventDefault();
+            searchInput.focus();
+        }
+    });
+
+    renderPlaygroundCode();
+</script>
+</body>
+</html>
